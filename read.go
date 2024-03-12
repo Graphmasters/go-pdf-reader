@@ -130,7 +130,7 @@ func NewReader(f io.ReaderAt, size int64) (*Reader, error) {
 // headerRegexp is used to check the validity of the header line of a PDF.
 // This should be able to support extra spaces between the version and the
 // newline (as inserted by libtiff/tiff2pdf) as well as supporting CRLF and LF.
-var headerRegexp = regexp.MustCompile(`^%PDF-1\.[0-7]\s*\r?\n`)
+var headerRegexp = regexp.MustCompile(`^%PDF-1\.[0-7][ ]*[\r\n]+`)
 
 // NewReaderEncrypted opens a file for reading, using the data in f with the given total size.
 // If the PDF is encrypted, NewReaderEncrypted calls pw repeatedly to obtain passwords
@@ -138,7 +138,7 @@ var headerRegexp = regexp.MustCompile(`^%PDF-1\.[0-7]\s*\r?\n`)
 // the file and returns an error.
 func NewReaderEncrypted(f io.ReaderAt, size int64, pw func() string) (*Reader, error) {
 	const headerLen = 11
-	buf := make([]byte, 11)
+	buf := make([]byte, headerLen)
 	f.ReadAt(buf, 0)
 	if !headerRegexp.Match(buf) {
 		return nil, fmt.Errorf("not a PDF file: invalid header")
