@@ -140,11 +140,7 @@ func NewReaderEncrypted(f io.ReaderAt, size int64, pw func() string) (*Reader, e
 	const headerLen = 11
 	buf := make([]byte, 11)
 	f.ReadAt(buf, 0)
-<<<<<<< HEAD
-	if !bytes.HasPrefix(buf, []byte("%PDF-1.")) || buf[7] < '0' || buf[7] > '7' || buf[8] != '\r' && buf[8] != '\n' {
-=======
 	if !headerRegexp.Match(buf) {
->>>>>>> a962e84 (refactor(read): make header validation more flexible)
 		return nil, fmt.Errorf("not a PDF file: invalid header")
 	}
 	end := size
